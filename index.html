@@ -8,7 +8,57 @@
     <title>Paper Trail — Book discovery</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <header class="site-header">
+        <a class="brand" href="#top" aria-label="Paper Trail home">paper trail<span>.</span></a>
+        <a class="saved-link" href="#saved">Saved shelf <span aria-hidden="true">♡</span></a>
+      </header>
+
+      <main id="top">
+        <section class="intro" aria-labelledby="page-title">
+          <p class="eyebrow">A BOOK DISCOVERY CORNER</p>
+          <h1 id="page-title">Find your next<br><em>favorite.</em></h1>
+          <p class="intro-copy">A good read is closer than you think. Search the shelves and see where the story takes you.</p>
+        </section>
+
+        <section class="search-section" aria-label="Search for books">
+          <label for="book-search">What would you like to read?</label>
+          <div class="search-row">
+            <input id="book-search" name="q" type="search" placeholder="Try a title, author, or subject" autocomplete="off">
+            <button id="search-button" type="button">Search <span aria-hidden="true">↗</span></button>
+          </div>
+          <p class="search-hint">For example: “mystery”, “Octavia Butler”, or “gardening”</p>
+        </section>
+
+        <section class="books-section" aria-labelledby="results-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">THE LIBRARY</p>
+              <h2 id="results-title">Books to explore</h2>
+            </div>
+            <p class="section-note" id="search-message" role="status" aria-live="polite">Your search results will appear here.</p>
+          </div>
+          <div class="book-grid" id="book-results"></div>
+        </section>
+
+        <section class="saved-section" id="saved" aria-labelledby="saved-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">KEEP FOR LATER</p>
+              <h2 id="saved-title">Your saved shelf</h2>
+            </div>
+            <span class="saved-count" id="saved-count">0 books</span>
+          </div>
+          <p class="saved-empty" id="saved-empty">Books you save will be collected here.</p>
+          <div class="book-grid" id="saved-books"></div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>paper trail<span class="footer-dot">.</span></span>
+        <span>Find a story. Keep a story.</span>
+      </footer>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
