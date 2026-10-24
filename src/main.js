@@ -11,8 +11,33 @@ const savedBooksContainer = document.querySelector('#saved-books')
 const savedEmptyMessage = document.querySelector('#saved-empty')
 const savedCount = document.querySelector('#saved-count')
 
+const SAVED_BOOKS_KEY = 'paper-trail-saved-books'
+
 let currentBooks = []
-let savedBooks = []
+
+function loadSavedBooks() {
+  try {
+    const savedBooksText = localStorage.getItem(SAVED_BOOKS_KEY)
+
+    if (savedBooksText === null) return []
+
+    const books = JSON.parse(savedBooksText)
+    return Array.isArray(books) ? books : []
+  } catch {
+    return []
+  }
+}
+
+let savedBooks = loadSavedBooks()
+
+function storeSavedBooks() {
+  try {
+    localStorage.setItem(SAVED_BOOKS_KEY, JSON.stringify(savedBooks))
+    return true
+  } catch {
+    return false
+  }
+}
 
 function setSearchMessage(message, state) {
   searchMessage.textContent = message
@@ -42,7 +67,12 @@ document.addEventListener('click', (event) => {
     if (bookToSave) savedBooks = [...savedBooks, bookToSave]
   }
 
+  const booksWereStored = storeSavedBooks()
   updateBookLists()
+
+  if (!booksWereStored) {
+    setSearchMessage('Your saved shelf could not be stored in this browser.', 'error')
+  }
 })
 
 searchForm.addEventListener('submit', async (event) => {
