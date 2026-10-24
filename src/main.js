@@ -14,6 +14,11 @@ const savedCount = document.querySelector('#saved-count')
 let currentBooks = []
 let savedBooks = []
 
+function setSearchMessage(message, state) {
+  searchMessage.textContent = message
+  searchMessage.className = `search-message is-${state}`
+}
+
 function updateBookLists() {
   renderBookCards(currentBooks, bookResults, savedBooks)
   renderBookCards(savedBooks, savedBooksContainer, savedBooks)
@@ -46,13 +51,13 @@ searchForm.addEventListener('submit', async (event) => {
   const query = searchInput.value.trim()
 
   if (query === '') {
-    searchMessage.textContent = 'Type a title, author, or subject to search.'
+    setSearchMessage('Type a title, author, or subject to search.', 'error')
     searchInput.focus()
     return
   }
 
   searchButton.disabled = true
-  searchMessage.textContent = 'Searching the library…'
+  setSearchMessage('Searching the library…', 'loading')
   currentBooks = []
   updateBookLists()
 
@@ -61,14 +66,14 @@ searchForm.addEventListener('submit', async (event) => {
     updateBookLists()
 
     if (currentBooks.length === 0) {
-      searchMessage.textContent = `No books found for “${query}”. Try another search.`
+      setSearchMessage(`No books found for “${query}”. Try another search.`, 'empty')
     } else {
-      searchMessage.textContent = `${currentBooks.length} books found for “${query}”.`
+      setSearchMessage(`${currentBooks.length} books found for “${query}”.`, 'success')
     }
   } catch (error) {
     currentBooks = []
     updateBookLists()
-    searchMessage.textContent = error.message
+    setSearchMessage(error.message, 'error')
   } finally {
     searchButton.disabled = false
   }
