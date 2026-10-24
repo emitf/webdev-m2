@@ -263,6 +263,22 @@ h2 {
   margin-top: 4px;
 }
 
+.save-button {
+  margin-top: 13px;
+  padding: 8px 10px;
+  border: 1px solid var(--green);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--green);
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.save-button:hover {
+  background: var(--green);
+  color: white;
+}
+
 .search-row button:disabled {
   cursor: wait;
   opacity: 0.65;

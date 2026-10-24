@@ -1,4 +1,4 @@
-function createBookCard(book) {
+function createBookCard(book, isSaved) {
   const card = document.createElement('article')
   card.className = 'book-card'
 
@@ -39,14 +39,25 @@ function createBookCard(book) {
     : 'Publication year unknown'
   details.append(year)
 
+  const saveButton = document.createElement('button')
+  saveButton.className = 'save-button'
+  saveButton.type = 'button'
+  saveButton.dataset.bookKey = book.key
+  saveButton.textContent = isSaved ? 'Remove from shelf' : 'Save for later'
+  saveButton.setAttribute('aria-pressed', String(isSaved))
+  details.append(saveButton)
+
   card.append(cover, details)
   return card
 }
 
-export function renderBookResults(books, container) {
+export function renderBookCards(books, container, savedBooks = []) {
   const cards = books
     .filter((book) => book && typeof book.title === 'string' && book.title.trim() !== '')
-    .map((book) => createBookCard(book))
+    .map((book) => {
+      const isSaved = savedBooks.some((savedBook) => savedBook.key === book.key)
+      return createBookCard(book, isSaved)
+    })
 
   container.replaceChildren(...cards)
 }
