@@ -1,60 +1,53 @@
 import './style.css'
-import heroImg from './assets/hero.png'
-import javascriptLogo from './assets/javascript.svg'
-import viteLogo from './assets/vite.svg'
-import { setupCounter } from './counter.js'
 
 document.querySelector('#app').innerHTML = `
-<section id="center">
-  <div class="hero">
-    <img src="${heroImg}" class="base" width="170" height="179">
-    <img src="${javascriptLogo}" class="framework" alt="JavaScript logo"/>
-    <img src="${viteLogo}" class="vite" alt="Vite logo" />
-  </div>
-  <div>
-    <h1>Get started</h1>
-    <p>Edit <code>src/main.js</code> and save to test <code>HMR</code></p>
-  </div>
-  <button id="counter" type="button" class="counter"></button>
-</section>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Paper Trail home">paper trail<span>.</span></a>
+    <a class="saved-link" href="#saved">Saved shelf <span aria-hidden="true">♡</span></a>
+  </header>
 
-<div class="ticks"></div>
+  <main id="top">
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">A BOOK DISCOVERY CORNER</p>
+      <h1 id="page-title">Find your next<br><em>favorite.</em></h1>
+      <p class="intro-copy">A good read is closer than you think. Search the shelves and see where the story takes you.</p>
+    </section>
 
-<section id="next-steps">
-  <div id="docs">
-    <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#documentation-icon"></use></svg>
-    <h2>Documentation</h2>
-    <p>Your questions, answered</p>
-    <ul>
-      <li>
-        <a href="https://vite.dev/" target="_blank">
-          <img class="logo" src="${viteLogo}" alt="" />
-          Explore Vite
-        </a>
-      </li>
-      <li>
-        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-          <img class="button-icon" src="${javascriptLogo}" alt="">
-          Learn more
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div id="social">
-    <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#social-icon"></use></svg>
-    <h2>Connect with us</h2>
-    <p>Join the Vite community</p>
-    <ul>
-      <li><a href="https://github.com/vitejs/vite" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#github-icon"></use></svg>GitHub</a></li>
-      <li><a href="https://chat.vite.dev/" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#discord-icon"></use></svg>Discord</a></li>
-      <li><a href="https://x.com/vite_js" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#x-icon"></use></svg>X.com</a></li>
-      <li><a href="https://bsky.app/profile/vite.dev" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#bluesky-icon"></use></svg>Bluesky</a></li>
-    </ul>
-  </div>
-</section>
+    <section class="search-section" aria-label="Search for books">
+      <label for="book-search">What would you like to read?</label>
+      <div class="search-row">
+        <input id="book-search" name="q" type="search" placeholder="Try a title, author, or subject" autocomplete="off">
+        <button id="search-button" type="button">Search <span aria-hidden="true">↗</span></button>
+      </div>
+      <p class="search-hint">For example: “mystery”, “Octavia Butler”, or “gardening”</p>
+    </section>
 
-<div class="ticks"></div>
-<section id="spacer"></section>
+    <section class="books-section" aria-labelledby="results-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">THE LIBRARY</p>
+          <h2 id="results-title">Books to explore</h2>
+        </div>
+        <p class="section-note" id="search-message" role="status" aria-live="polite">Your search results will appear here.</p>
+      </div>
+      <div class="book-grid" id="book-results"></div>
+    </section>
+
+    <section class="saved-section" id="saved" aria-labelledby="saved-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">KEEP FOR LATER</p>
+          <h2 id="saved-title">Your saved shelf</h2>
+        </div>
+        <span class="saved-count" id="saved-count">0 books</span>
+      </div>
+      <p class="saved-empty" id="saved-empty">Books you save will be collected here.</p>
+      <div class="book-grid" id="saved-books"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>paper trail<span class="footer-dot">.</span></span>
+    <span>Find a story. Keep a story.</span>
+  </footer>
 `
-
-setupCounter(document.querySelector('#counter'))
