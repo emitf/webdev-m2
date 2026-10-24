@@ -217,6 +217,57 @@ h2 {
   gap: 18px;
 }
 
+.book-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: #fffefa;
+}
+
+.book-cover {
+  min-height: 210px;
+  display: grid;
+  place-items: center;
+  background: #e9e5d9;
+  color: var(--muted);
+  font: 11px var(--mono);
+  text-align: center;
+}
+
+.book-cover img {
+  display: block;
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+}
+
+.book-details {
+  padding: 13px;
+}
+
+.book-details h3 {
+  margin: 0 0 9px;
+  color: var(--ink);
+  font: 600 16px/1.35 var(--serif);
+}
+
+.book-author,
+.book-year {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.book-year {
+  margin-top: 4px;
+}
+
+.search-row button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 .saved-empty {
   margin-bottom: 0;
   padding: 23px;
@@ -262,6 +313,14 @@ h2 {
 
   .book-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .book-cover {
+    min-height: 170px;
+  }
+
+  .book-cover img {
+    height: 190px;
   }
 
   .section-heading {
