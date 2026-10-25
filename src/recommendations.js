@@ -8,12 +8,12 @@ const GENERAL_SUBJECTS = [
 ]
 
 const GENRE_GROUPS = {
-  Romance: ['romance', 'love stories'],
+  Romance: ['romance', 'romantic fiction', 'rom-com', 'love stories'],
   Mystery: ['mystery', 'detective'],
   Crime: ['crime'],
   Thriller: ['thriller', 'suspense'],
   Dystopian: ['dystop'],
-  'Science fiction': ['science fiction', 'sci-fi'],
+  'Science fiction': ['science fiction', 'science-fiction', 'sci-fi', 'scifi'],
   Fantasy: ['fantasy'],
   Horror: ['horror'],
   Adventure: ['adventure'],
