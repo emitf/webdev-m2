@@ -1,5 +1,5 @@
 const SEARCH_URL = 'https://openlibrary.org/search.json'
-const SEARCH_CACHE_KEY = 'paper-trail-search-cache'
+const SEARCH_CACHE_KEY = 'paper-trail-search-cache-v2'
 
 function getCachedBooks(query) {
   try {
@@ -31,7 +31,7 @@ export async function searchBooks(query) {
   const params = new URLSearchParams({
     q: query,
     limit: '12',
-    fields: 'key,title,author_name,first_publish_year,cover_i',
+    fields: 'key,title,author_name,first_publish_year,cover_i,subject',
   })
 
   let response
