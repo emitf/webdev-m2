@@ -1,6 +1,7 @@
 import './style.css'
 import { searchBooks } from './api.js'
 import { renderBookCards } from './bookResults.js'
+import { findMostCommonGenre } from './recommendations.js'
 
 const searchForm = document.querySelector('#search-form')
 const searchInput = document.querySelector('#book-search')
@@ -15,25 +16,6 @@ const recommendationMessage = document.querySelector('#recommendation-message')
 const recommendedBooksContainer = document.querySelector('#recommended-books')
 
 const SAVED_BOOKS_KEY = 'paper-trail-saved-books'
-const GENERAL_SUBJECTS = [
-  'fiction',
-  'juvenile fiction',
-  'young adult fiction',
-  'accessible book',
-  'protected daisy',
-  'large type books',
-]
-const GENRE_GROUPS = {
-  Romance: ['romance', 'love stories'],
-  Mystery: ['mystery', 'detective'],
-  Crime: ['crime'],
-  Thriller: ['thriller', 'suspense'],
-  Dystopian: ['dystop'],
-  'Science fiction': ['science fiction', 'sci-fi'],
-  Fantasy: ['fantasy'],
-  Horror: ['horror'],
-  Adventure: ['adventure'],
-}
 
 let currentBooks = []
 let recommendedBooks = []
@@ -70,38 +52,6 @@ function setSearchMessage(message, state) {
 function setRecommendationMessage(message, state) {
   recommendationMessage.textContent = message
   recommendationMessage.className = `recommendation-message is-${state}`
-}
-
-function findMostCommonGenre(books) {
-  const genreCounts = books.reduce((counts, book) => {
-    const subjects = Array.isArray(book.subject) ? book.subject : []
-    const bookGenres = new Set()
-
-    subjects.forEach((subject) => {
-      if (typeof subject !== 'string' || subject.trim() === '') return
-      const cleanSubject = subject.trim()
-      if (GENERAL_SUBJECTS.includes(cleanSubject.toLowerCase())) return
-
-      Object.entries(GENRE_GROUPS).forEach(([genre, hints]) => {
-        if (hints.some((hint) => cleanSubject.toLowerCase().includes(hint))) {
-          bookGenres.add(genre)
-        }
-      })
-    })
-
-    bookGenres.forEach((genre) => {
-      // Count a specific dystopian label instead of also counting its broader sci-fi label.
-      if (genre === 'Science fiction' && bookGenres.has('Dystopian')) return
-      counts[genre] = (counts[genre] || 0) + 1
-    })
-
-    return counts
-  }, {})
-
-  const mostCommonGenre = Object.entries(genreCounts)
-    .sort((first, second) => second[1] - first[1])[0]
-
-  return mostCommonGenre ? mostCommonGenre[0] : null
 }
 
 function updateBookLists() {
