@@ -51,6 +51,18 @@
           </div>
           <p class="saved-empty" id="saved-empty">Books you save will be collected here.</p>
           <div class="book-grid" id="saved-books"></div>
+
+          <div class="recommendation-section" aria-labelledby="recommendation-title">
+            <div class="recommendation-heading">
+              <div>
+                <p class="eyebrow">BASED ON YOUR SHELF</p>
+                <h2 id="recommendation-title">You might also like</h2>
+              </div>
+              <button class="recommend-button" id="recommend-button" type="button" disabled>Find recommendations</button>
+            </div>
+            <p class="recommendation-message is-idle" id="recommendation-message" role="status" aria-live="polite">Save a book to get recommendations.</p>
+            <div class="book-grid" id="recommended-books"></div>
+          </div>
         </section>
       </main>
 

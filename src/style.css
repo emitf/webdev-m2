@@ -361,6 +361,75 @@ h2 {
   text-align: center;
 }
 
+.recommendation-section {
+  margin-top: 34px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+}
+
+.recommendation-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.recommendation-heading .eyebrow {
+  margin-bottom: 7px;
+  font-size: 10px;
+}
+
+.recommend-button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 2px;
+  background: var(--green);
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.recommend-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.recommendation-message {
+  margin: 0 0 18px;
+  padding: 12px 15px;
+  border-left: 4px solid #aaa89e;
+  background: #efede6;
+  color: #68685f;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.recommendation-message.is-loading {
+  border-left-color: var(--green);
+  background: #e5ece5;
+  color: #344d38;
+}
+
+.recommendation-message.is-success {
+  border-left-color: #73846c;
+  background: #e9ede5;
+  color: #3e5140;
+}
+
+.recommendation-message.is-empty {
+  border-left-color: #b17a31;
+  background: #f4eddf;
+  color: #765324;
+}
+
+.recommendation-message.is-error {
+  border-left-color: #ad5144;
+  background: #f5e8e4;
+  color: #7c382f;
+}
+
 .site-footer {
   min-height: 68px;
   display: flex;
@@ -407,7 +476,8 @@ h2 {
     height: 190px;
   }
 
-  .section-heading {
+  .section-heading,
+  .recommendation-heading {
     align-items: start;
     flex-direction: column;
     gap: 9px;
