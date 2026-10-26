@@ -10,7 +10,7 @@ Paper Trail is a small book discovery app where you can search for books, save t
 3. Click the "Find recommendations" button to search for books related to the most common recognizable genre on your shelf.
 4. Remove books from the shelf whenever you want.
 
-The app also remembers search results in this browser, so a search you have already made can load more quickly next time.
+The app caches search results in this browser for up to 24 hours, keeping up to 20 searches at a time so repeated searches can load more quickly.
 
 ## Use of AI
 

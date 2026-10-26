@@ -1,3 +1,5 @@
+import { filterValidBooks } from './bookData.js'
+
 function createBookCard(book, isSaved) {
   const card = document.createElement('article')
   card.className = 'book-card'
@@ -52,12 +54,16 @@ function createBookCard(book, isSaved) {
 }
 
 export function renderBookCards(books, container, savedBooks = []) {
-  const cards = books
-    .filter((book) => book && typeof book.title === 'string' && book.title.trim() !== '')
+  const cards = filterValidBooks(books)
     .map((book) => {
       const isSaved = savedBooks.some((savedBook) => savedBook.key === book.key)
       return createBookCard(book, isSaved)
     })
 
   container.replaceChildren(...cards)
+}
+
+export function renderMessage(element, messageClass, message, state) {
+  element.textContent = message
+  element.className = `${messageClass} is-${state}`
 }

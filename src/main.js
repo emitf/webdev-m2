@@ -1,7 +1,9 @@
 import './style.css'
 import { searchBooks } from './api.js'
-import { renderBookCards } from './bookResults.js'
+import { filterValidBooks } from './bookData.js'
+import { renderBookCards, renderMessage } from './bookResults.js'
 import { findMostCommonGenre } from './recommendations.js'
+import { loadSavedBooks, storeSavedBooks } from './storage.js'
 
 const searchForm = document.querySelector('#search-form')
 const searchInput = document.querySelector('#book-search')
@@ -15,48 +17,16 @@ const recommendButton = document.querySelector('#recommend-button')
 const recommendationMessage = document.querySelector('#recommendation-message')
 const recommendedBooksContainer = document.querySelector('#recommended-books')
 
-const SAVED_BOOKS_KEY = 'paper-trail-saved-books'
-
+let savedBooks = loadSavedBooks()
 let currentBooks = []
 let recommendedBooks = []
-
-function loadSavedBooks() {
-  try {
-    const savedBooksText = localStorage.getItem(SAVED_BOOKS_KEY)
-
-    if (savedBooksText === null) return []
-
-    const books = JSON.parse(savedBooksText)
-    return Array.isArray(books) ? books : []
-  } catch {
-    return []
-  }
-}
-
-let savedBooks = loadSavedBooks()
-
-function storeSavedBooks() {
-  try {
-    localStorage.setItem(SAVED_BOOKS_KEY, JSON.stringify(savedBooks))
-    return true
-  } catch {
-    return false
-  }
-}
-
-function setSearchMessage(message, state) {
-  searchMessage.textContent = message
-  searchMessage.className = `search-message is-${state}`
-}
-
-function setRecommendationMessage(message, state) {
-  recommendationMessage.textContent = message
-  recommendationMessage.className = `recommendation-message is-${state}`
-}
+let latestSearchRequestId = 0
+let latestRecommendationRequestId = 0
 
 function updateBookLists() {
   renderBookCards(currentBooks, bookResults, savedBooks)
   renderBookCards(savedBooks, savedBooksContainer, savedBooks)
+
   const booksNotSaved = recommendedBooks.filter((book) =>
     !savedBooks.some((savedBook) => savedBook.key === book.key)
   )
@@ -69,7 +39,6 @@ function updateBookLists() {
 
 document.addEventListener('click', (event) => {
   const saveButton = event.target.closest('[data-book-key]')
-
   if (!saveButton) return
 
   const bookKey = saveButton.dataset.bookKey
@@ -83,83 +52,112 @@ document.addEventListener('click', (event) => {
     if (bookToSave) savedBooks = [...savedBooks, bookToSave]
   }
 
+  latestRecommendationRequestId += 1
   recommendedBooks = []
-  setRecommendationMessage('Your shelf changed. Find recommendations again to refresh them.', 'idle')
-  const booksWereStored = storeSavedBooks()
+  renderMessage(
+    recommendationMessage,
+    'recommendation-message',
+    'Your shelf changed. Find recommendations again to refresh them.',
+    'idle',
+  )
+  const booksWereStored = storeSavedBooks(savedBooks)
   updateBookLists()
 
   if (!booksWereStored) {
-    setSearchMessage('Your saved shelf could not be stored in this browser.', 'error')
+    renderMessage(searchMessage, 'search-message', 'Your saved shelf could not be stored in this browser.', 'error')
   }
 })
 
 recommendButton.addEventListener('click', async () => {
+  const requestId = ++latestRecommendationRequestId
   const subject = findMostCommonGenre(savedBooks)
 
   if (!subject) {
-    setRecommendationMessage('Your saved books do not have specific subjects to base recommendations on yet.', 'error')
+    renderMessage(
+      recommendationMessage,
+      'recommendation-message',
+      'Your saved books do not have specific subjects to base recommendations on yet.',
+      'error',
+    )
     return
   }
 
   recommendButton.disabled = true
-  setRecommendationMessage(`Looking for books about “${subject}”…`, 'loading')
+  renderMessage(recommendationMessage, 'recommendation-message', `Looking for books about “${subject}”…`, 'loading')
 
   try {
     const books = await searchBooks(`subject:"${subject}"`)
-    recommendedBooks = books
-      .filter((book) =>
-        book && typeof book.title === 'string' && book.title.trim() !== ''
-        && !savedBooks.some((savedBook) => savedBook.key === book.key)
-      )
+    if (requestId !== latestRecommendationRequestId) return
+
+    recommendedBooks = filterValidBooks(books)
+      .filter((book) => !savedBooks.some((savedBook) => savedBook.key === book.key))
       .slice(0, 8)
 
     updateBookLists()
 
     if (recommendedBooks.length === 0) {
-      setRecommendationMessage(`No new books found for “${subject}”. Try saving a different book.`, 'empty')
+      renderMessage(
+        recommendationMessage,
+        'recommendation-message',
+        `No new books found for “${subject}”. Try saving a different book.`,
+        'empty',
+      )
     } else {
-      setRecommendationMessage(`Suggestions based on “${subject}” from your saved shelf.`, 'success')
+      renderMessage(
+        recommendationMessage,
+        'recommendation-message',
+        `Suggestions based on “${subject}” from your saved shelf.`,
+        'success',
+      )
     }
   } catch (error) {
+    if (requestId !== latestRecommendationRequestId) return
     recommendedBooks = []
     updateBookLists()
-    setRecommendationMessage(error.message, 'error')
+    renderMessage(recommendationMessage, 'recommendation-message', error.message, 'error')
   } finally {
-    recommendButton.disabled = savedBooks.length === 0
+    if (requestId === latestRecommendationRequestId) {
+      recommendButton.disabled = savedBooks.length === 0
+    }
   }
 })
 
 searchForm.addEventListener('submit', async (event) => {
   event.preventDefault()
-
+  const requestId = ++latestSearchRequestId
   const query = searchInput.value.trim()
 
   if (query === '') {
-    setSearchMessage('Type a title, author, or subject to search.', 'error')
+    searchButton.disabled = false
+    renderMessage(searchMessage, 'search-message', 'Type a title, author, or subject to search.', 'error')
     searchInput.focus()
     return
   }
 
   searchButton.disabled = true
-  setSearchMessage('Searching the library…', 'loading')
+  renderMessage(searchMessage, 'search-message', 'Searching the library…', 'loading')
   currentBooks = []
   updateBookLists()
 
   try {
-    currentBooks = await searchBooks(query)
+    const books = await searchBooks(query)
+    if (requestId !== latestSearchRequestId) return
+
+    currentBooks = filterValidBooks(books)
     updateBookLists()
 
     if (currentBooks.length === 0) {
-      setSearchMessage(`No books found for “${query}”. Try another search.`, 'empty')
+      renderMessage(searchMessage, 'search-message', `No books found for “${query}”. Try another search.`, 'empty')
     } else {
-      setSearchMessage(`${currentBooks.length} books found for “${query}”.`, 'success')
+      renderMessage(searchMessage, 'search-message', `${currentBooks.length} books found for “${query}”.`, 'success')
     }
   } catch (error) {
+    if (requestId !== latestSearchRequestId) return
     currentBooks = []
     updateBookLists()
-    setSearchMessage(error.message, 'error')
+    renderMessage(searchMessage, 'search-message', error.message, 'error')
   } finally {
-    searchButton.disabled = false
+    if (requestId === latestSearchRequestId) searchButton.disabled = false
   }
 })
 

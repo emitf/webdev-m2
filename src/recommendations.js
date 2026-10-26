@@ -1,3 +1,5 @@
+import { filterValidBooks } from './bookData.js'
+
 const GENERAL_SUBJECTS = [
   'fiction',
   'juvenile fiction',
@@ -20,7 +22,7 @@ const GENRE_GROUPS = {
 }
 
 export function findMostCommonGenre(books) {
-  const genreCounts = books.reduce((counts, book) => {
+  const genreCounts = filterValidBooks(books).reduce((counts, book) => {
     const subjects = Array.isArray(book.subject) ? book.subject : []
     const bookGenres = new Set()
 
@@ -45,8 +47,10 @@ export function findMostCommonGenre(books) {
     return counts
   }, {})
 
-  const mostCommonGenre = Object.entries(genreCounts)
-    .sort((first, second) => second[1] - first[1])[0]
+  const mostCommonGenre = Object.entries(genreCounts).reduce((mostCommon, currentGenre) => {
+    if (mostCommon === null || currentGenre[1] > mostCommon[1]) return currentGenre
+    return mostCommon
+  }, null)
 
   return mostCommonGenre ? mostCommonGenre[0] : null
 }
